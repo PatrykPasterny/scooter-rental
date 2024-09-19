@@ -3,18 +3,13 @@ package repository
 import (
 	"context"
 	"fmt"
-	rentalmodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
-	trackermodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/model"
+
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
-)
 
-//go:generate mockgen -source=repository.go -destination=mock/repository_mock.go -package=mock
-type ScooterRepository interface {
-	GetScooters(ctx context.Context, geoRectangle *rentalmodel.GeoRectangle) ([]*rentalmodel.Scooter, error)
-	UpdateScooterLocation(ctx context.Context, scooter *trackermodel.Scooter) error
-	UpdateScooterAvailability(ctx context.Context, scooterUUID uuid.UUID, availability bool) error
-}
+	rentalmodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
+	trackermodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/model"
+)
 
 type redisService struct {
 	client *redis.Client

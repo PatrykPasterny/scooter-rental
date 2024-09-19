@@ -4,15 +4,17 @@ package repository
 
 import (
 	"context"
-	rentalmodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
-	trackermodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/model"
+	"log"
+	"reflect"
+	"testing"
+
 	"github.com/go-redis/redismock/v9"
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/require"
-	"log"
-	"reflect"
-	"testing"
+
+	rentalmodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
+	trackermodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/model"
 )
 
 const (

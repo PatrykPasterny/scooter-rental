@@ -28,7 +28,7 @@ const docTemplate = `{
                         "type": "string",
                         "default": "00000000-0000-0000-0000-000000000000",
                         "description": "ClientID",
-                        "name": "client_id",
+                        "name": "Client-Id",
                         "in": "header",
                         "required": true
                     },
@@ -38,7 +38,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_model.FreePost"
+                            "$ref": "#/definitions/github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_transfer_rest_model.FreePost"
                         }
                     }
                 ],
@@ -80,7 +80,7 @@ const docTemplate = `{
                         "type": "string",
                         "default": "00000000-0000-0000-0000-000000000000",
                         "description": "ClientID",
-                        "name": "client_id",
+                        "name": "Client-Id",
                         "in": "header",
                         "required": true
                     },
@@ -90,7 +90,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_model.RentPost"
+                            "$ref": "#/definitions/github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_transfer_rest_model.RentPost"
                         }
                     }
                 ],
@@ -132,7 +132,7 @@ const docTemplate = `{
                         "type": "string",
                         "default": "00000000-0000-0000-0000-000000000000",
                         "description": "ClientID",
-                        "name": "client_id",
+                        "name": "Client-Id",
                         "in": "header",
                         "required": true
                     },
@@ -175,6 +175,12 @@ const docTemplate = `{
                         "name": "width",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Value of availability to filter by",
+                        "name": "availability",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -183,7 +189,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_model.ScooterGet"
+                                "$ref": "#/definitions/github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_transfer_rest_model.ScooterGet"
                             }
                         }
                     },
@@ -210,7 +216,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_model.FreePost": {
+        "github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_transfer_rest_model.FreePost": {
             "type": "object",
             "required": [
                 "UUID"
@@ -221,7 +227,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_model.RentPost": {
+        "github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_transfer_rest_model.RentPost": {
             "type": "object",
             "required": [
                 "UUID",
@@ -244,7 +250,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_model.ScooterGet": {
+        "github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_transfer_rest_model.ScooterGet": {
             "type": "object",
             "properties": {
                 "UUID": {

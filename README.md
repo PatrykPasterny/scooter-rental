@@ -1,16 +1,17 @@
-# Scootin Aboot
+# Scootin Aboot 
 
+An app to simulate a scooter rental company.
 
 ## Getting started
 
-To set the application up you can simply use:
-
+To set the application up you can simply use this two command after successfully cloning the repository:
 
 ```aqua
+    go mod download
     docker compose up
 ```
 
-You would need to have docker installed on your local machine. Running this command
+You would need to have docker installed on your local machine. Running the second command command
 will run the application on port 8081 and setup basic data in Redis. It will also
 set up and simulate three mobile clients that are randomly using, riding and freeing
 the scooters for the first seconds of the application life. After this time this predefined
@@ -38,32 +39,55 @@ where <app-container-id> can be obtained using:
     docker ps
 ```
 
-## Architecture
+## Tests
 
+Unit tests are tagged with <i>unit</i> tag. To run the tests use:
+```aqua
+go test --tags unit ./...
+```
 
-I have chosen the modular monolith architecture as it is easier to build from scratch, easier to maintain
-at the beginning of the process of creating app's prototype and app itself. If needed it is easy to break
-apart the modules and create microservices out of it enabling better scaling and adding more complexity.
+## Example of usage
+Once you deployed the application in docker containers using instructions from the above paragraph you should be able to connect to the 
+application listening on the port 8081. To do so we can use curl. To get all scooters in Ottawa in a range in a shape of rectangle with the
+middle of rectangle defined by it's longitude and latitude and the width and the height of the rectangle defined in meters use:
+```aqua
+curl -X GET \
+-H "Client-Id: cd81ed3b-c1a5-43f5-b524-35eaebf0430c" \
+"http://localhost:8081/api/v1/scooters?city=Ottawa&longitude=73.55&latitude=45.5&height=20000.0&width=25000.0"
+```
 
+You can also add optional availability query param to the request above to filter the scooters by their current status by adding to the end of the above url:
+```aqua
+&availability=true
+```
+or
+```aqua
+&availability=false
+```
 
-For the modules and resources I have chosen:
-- Redis for database, as it has amazing functionalities for geospatial indexing, is fast to read and easy to maintain.
-  highly available, consistent and really easy to scale. The usage of NoSQL database here also enables
-  easy way to change the data models without necessity of migrations.
-  Redis connections are hidden behind ScooterRepository interface, so in case of future decisions regarding database vendor we can
-  easily swap it with different implementation of the interface without a need of change in other places of application (apart
-  from main.go of course where we set up the application)
-- Rental Service uses ScooterRepository to Rent and Free the scooters. It also asks Tracker service to track the scooters
-  on their journeys.
-- Tracker Service triggered by the Rental Service it runs and stops the process of tracking scooters. In the production env
-  this kind of service may be integrated with the scooters' soft itself, so we can use the GPS transmitter of scooter for the updates
-  and change the Rental Service call that triggers Tracker Service into a Message Queue event (RabbitMQ or Kafka can be used for it).
-  It would loosen the binding between two services.
+If you then want to rent one of the scooters obtained in the result pick one of them that has availability set to true and use:
+```aqua
+curl -X POST \
+-H "Client-Id: cd81ed3b-c1a5-43f5-b524-35eaebf0430c" \
+-H "Content-Type: application/json" \
+-d '{"UUID": "{scooter_uuid}", "longitude": {scooter_longitude}, "latitude": {scooter_latitude}, "city":"Ottawa"}' \
+http://localhost:8081/api/v1/rent
+```
+scooter_uuid is an UUID to identify scooter, scooter_longitude is its longitude and scooter_latitude is its latitude obtained in the GET 
+call above.
 
-Assumptions:
-- For the UpdateAvailability redis call I decided that we don't want to allow the availability of scooter to be changed
-  from false to false and from true to true. To make it happen I used Watch redis command. That also makes the process of renting
-  scooters more reliable and easier, because two users can not change the availability to 0 (rent the scooter) at the same time.
+If you check the logs of the docker container running the application you can notice that the scooter was rented and its localisation is 
+tracked.
 
-Tradeoffs:
-- Redis is not a SQL database, so using indexes or more advanced ways of querying data is not available, so we rely on key-value store.
+Now if you want to free the scooter you have just rented use:
+
+```aqua
+curl -X POST \
+-H "Client-Id: cd81ed3b-c1a5-43f5-b524-35eaebf0430c" \
+-H "Content-Type: application/json" \
+-d '{"UUID": "{scooter_uuid}"}' \
+http://localhost:8081/api/v1/free
+```
+
+If you check the logs of the docker container now you should notice that the scooter was successfully freed and the tracking process has 
+ended.

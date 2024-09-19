@@ -13,7 +13,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/require"
 
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/repository/mock"
+	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/mock"
 	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/model"
 )
 

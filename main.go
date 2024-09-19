@@ -3,13 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/go-playground/validator/v10"
-	"github.com/gorilla/mux"
-	"github.com/redis/go-redis/v9"
 	"log"
 	"log/slog"
 	"net/http"
 	"os"
+
+	"github.com/go-playground/validator/v10"
+	"github.com/gorilla/mux"
+	"github.com/redis/go-redis/v9"
 
 	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/config"
 	redisservice "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/repository"
@@ -33,12 +34,17 @@ func main() {
 	validate := validator.New()
 
 	redisClient := redis.NewClient(&redis.Options{
-		Addr:     "redis:6379",
-		Password: "",
-		DB:       0,
+		Addr:     cfg.Redis.Host,
+		Password: cfg.Redis.Password,
+		DB:       cfg.Redis.Database,
 	})
 
-	initializeRedis(redisClient)
+	err = initializeRedis(redisClient)
+	if err != nil {
+		logger.Error("failed to initialize redis", slog.Any("err", err))
+
+		return
+	}
 
 	redisService := redisservice.NewRedisService(redisClient)
 	trackerService := tracker.NewTrackingService(logger, redisService)
@@ -53,49 +59,22 @@ func main() {
 
 	users := cfg.GetUsersMap()
 
-	server := api.NewServer(logger, validate, httpServer, router, redisService, rentalService, trackerService, users)
+	server := api.NewServer(logger, validate, httpServer, router, rentalService, trackerService, users)
 
 	server.Run()
-
-	//clients := []*client.Client{
-	//	{
-	//		ClientUUID: uuid.New(),
-	//		Longitude:  73.4,
-	//		Latitude:   45.4,
-	//		City:       "Ottawa",
-	//		Height:     50000.0,
-	//		Width:      55000.0,
-	//	},
-	//	{
-	//		ClientUUID: uuid.New(),
-	//		Longitude:  73.5,
-	//		Latitude:   45.5,
-	//		City:       "Ottawa",
-	//		Height:     50000.0,
-	//		Width:      55000.0,
-	//	},
-	//	{
-	//		ClientUUID: uuid.New(),
-	//		Longitude:  73.6,
-	//		Latitude:   45.6,
-	//		City:       "Ottawa",
-	//		Height:     50000.0,
-	//		Width:      55000.0,
-	//	},
-	//}
 }
 
-func initializeRedis(redisClient *redis.Client) {
+func initializeRedis(redisClient *redis.Client) error {
 	if _, err := redisClient.GeoAdd(context.Background(), "Ottawa", &redis.GeoLocation{
 		Name:      "0dae4f8c-dbbf-4bac-90f2-b80f07255ba5",
 		Longitude: 73.5673,
 		Latitude:  45.5017,
 	}).Result(); err != nil {
-		panic(err)
+		return fmt.Errorf("adding scooter location: %w", err)
 	}
 
 	if err := redisClient.Set(context.Background(), "0dae4f8c-dbbf-4bac-90f2-b80f07255ba5", true, 0).Err(); err != nil {
-		panic(err)
+		return fmt.Errorf("adding scooter's availability: %w", err)
 	}
 
 	if _, err := redisClient.GeoAdd(context.Background(), "Ottawa", &redis.GeoLocation{
@@ -103,11 +82,11 @@ func initializeRedis(redisClient *redis.Client) {
 		Longitude: 73.5548,
 		Latitude:  45.5088,
 	}).Result(); err != nil {
-		panic(err)
+		return fmt.Errorf("adding scooter location: %w", err)
 	}
 
 	if err := redisClient.Set(context.Background(), "61637887-385e-47bd-ad8c-5ace4fbd2877", true, 0).Err(); err != nil {
-		panic(err)
+		return fmt.Errorf("adding scooter's availability: %w", err)
 	}
 
 	if _, err := redisClient.GeoAdd(context.Background(), "Ottawa", &redis.GeoLocation{
@@ -115,11 +94,11 @@ func initializeRedis(redisClient *redis.Client) {
 		Longitude: 73.5637,
 		Latitude:  45.4724,
 	}).Result(); err != nil {
-		panic(err)
+		return fmt.Errorf("adding scooter location: %w", err)
 	}
 
 	if err := redisClient.Set(context.Background(), "4117b009-5e61-4b3a-aac5-c9d6a75483cb", true, 0).Err(); err != nil {
-		panic(err)
+		return fmt.Errorf("adding scooter's availability: %w", err)
 	}
 
 	if _, err := redisClient.GeoAdd(context.Background(), "Montreal", &redis.GeoLocation{
@@ -127,11 +106,11 @@ func initializeRedis(redisClient *redis.Client) {
 		Longitude: 65.5637,
 		Latitude:  30.5234,
 	}).Result(); err != nil {
-		panic(err)
+		return fmt.Errorf("adding scooter location: %w", err)
 	}
 
 	if err := redisClient.Set(context.Background(), "bad9f260-e3f5-4375-a4b3-3f6e258eb21f", true, 0).Err(); err != nil {
-		panic(err)
+		return fmt.Errorf("adding scooter's availability: %w", err)
 	}
 
 	if _, err := redisClient.GeoAdd(context.Background(), "Montreal", &redis.GeoLocation{
@@ -139,11 +118,11 @@ func initializeRedis(redisClient *redis.Client) {
 		Longitude: 65.1207,
 		Latitude:  30.2827,
 	}).Result(); err != nil {
-		panic(err)
+		return fmt.Errorf("adding scooter location: %w", err)
 	}
 
 	if err := redisClient.Set(context.Background(), "32341255-c86a-4106-94e0-28dd9b3f88f2", true, 0).Err(); err != nil {
-		panic(err)
+		return fmt.Errorf("adding scooter's availability: %w", err)
 	}
 
 	if _, err := redisClient.GeoAdd(context.Background(), "Montreal", &redis.GeoLocation{
@@ -151,10 +130,12 @@ func initializeRedis(redisClient *redis.Client) {
 		Longitude: 65.5537,
 		Latitude:  30.5234,
 	}).Result(); err != nil {
-		panic(err)
+		return fmt.Errorf("adding scooter location: %w", err)
 	}
 
 	if err := redisClient.Set(context.Background(), "b55fcd8c-383c-4169-9e4a-1c1bf15fdb76", true, 0).Err(); err != nil {
-		panic(err)
+		return fmt.Errorf("adding scooter's availability: %w", err)
 	}
+
+	return nil
 }

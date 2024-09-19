@@ -13,7 +13,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/require"
 
-	redisservicemock "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/repository/mock"
+	repositorymock "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/mock"
 	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
 )
 
@@ -39,12 +39,12 @@ func TestRent(t *testing.T) {
 
 	tests := map[string]struct {
 		rentInfo                *model.RentInfo
-		mockRedisServiceHandler func(mock *redisservicemock.MockScooterRepository)
+		mockRedisServiceHandler func(mock *repositorymock.MockScooterRepository)
 		wantErr                 bool
 	}{
 		"successfully rent scooter": {
 			rentInfo: rentInfo,
-			mockRedisServiceHandler: func(mock *redisservicemock.MockScooterRepository) {
+			mockRedisServiceHandler: func(mock *repositorymock.MockScooterRepository) {
 				scooterUUID, innerErr := uuid.Parse(rentInfo.ScooterUUID)
 				require.NoError(t, innerErr)
 
@@ -59,7 +59,7 @@ func TestRent(t *testing.T) {
 		},
 		"rent scooter failing because redis service threw an error": {
 			rentInfo: rentInfo,
-			mockRedisServiceHandler: func(mock *redisservicemock.MockScooterRepository) {
+			mockRedisServiceHandler: func(mock *repositorymock.MockScooterRepository) {
 				scooterUUID, innerErr := uuid.Parse(rentInfo.ScooterUUID)
 				require.NoError(t, innerErr)
 
@@ -73,7 +73,7 @@ func TestRent(t *testing.T) {
 			controller := gomock.NewController(t)
 			defer controller.Finish()
 
-			mockRedisService := redisservicemock.NewMockScooterRepository(controller)
+			mockRedisService := repositorymock.NewMockScooterRepository(controller)
 
 			if tt.mockRedisServiceHandler != nil {
 				tt.mockRedisServiceHandler(mockRedisService)
@@ -97,12 +97,12 @@ func TestFree(t *testing.T) {
 
 	tests := map[string]struct {
 		logger                  *log.Logger
-		mockRedisServiceHandler func(mock *redisservicemock.MockScooterRepository)
+		mockRedisServiceHandler func(mock *repositorymock.MockScooterRepository)
 		wantErr                 bool
 	}{
 		"successfully freed scooter": {
 			logger: logger,
-			mockRedisServiceHandler: func(mock *redisservicemock.MockScooterRepository) {
+			mockRedisServiceHandler: func(mock *repositorymock.MockScooterRepository) {
 				mock.EXPECT().UpdateScooterAvailability(ctx, firstScooterUUID, true).
 					Return(nil).Times(1)
 			},
@@ -110,7 +110,7 @@ func TestFree(t *testing.T) {
 		},
 		"freeing scooter failed because redis service threw an error when updating availability": {
 			logger: logger,
-			mockRedisServiceHandler: func(mock *redisservicemock.MockScooterRepository) {
+			mockRedisServiceHandler: func(mock *repositorymock.MockScooterRepository) {
 				mock.EXPECT().UpdateScooterAvailability(ctx, firstScooterUUID, true).
 					Return(redis.ErrClosed).Times(1)
 			},
@@ -122,7 +122,7 @@ func TestFree(t *testing.T) {
 			controller := gomock.NewController(t)
 			defer controller.Finish()
 
-			mockRedisService := redisservicemock.NewMockScooterRepository(controller)
+			mockRedisService := repositorymock.NewMockScooterRepository(controller)
 
 			if tt.mockRedisServiceHandler != nil {
 				tt.mockRedisServiceHandler(mockRedisService)

@@ -3,10 +3,6 @@ package api
 import (
 	"context"
 	"errors"
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/repository"
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental"
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker"
-	"github.com/go-playground/validator/v10"
 	"log/slog"
 	"net/http"
 	"os"
@@ -14,7 +10,11 @@ import (
 	"sync"
 	"syscall"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
+
+	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental"
+	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker"
 )
 
 type Server struct {
@@ -22,7 +22,6 @@ type Server struct {
 	validator      *validator.Validate
 	httpServer     *http.Server
 	router         *mux.Router
-	redisService   repository.ScooterRepository
 	rentalService  rental.RentalService
 	trackerService tracker.Service
 	eligibleUsers  map[string]bool
@@ -33,7 +32,6 @@ func NewServer(
 	validator *validator.Validate,
 	server *http.Server,
 	router *mux.Router,
-	redis repository.ScooterRepository,
 	rental rental.RentalService,
 	tracker tracker.Service,
 	users map[string]bool,
@@ -44,7 +42,6 @@ func NewServer(
 		validator:      validator,
 		httpServer:     server,
 		router:         router,
-		redisService:   redis,
 		rentalService:  rental,
 		trackerService: tracker,
 		eligibleUsers:  users,
@@ -79,7 +76,7 @@ func (s *Server) Run() {
 		if err := s.httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			cancel()
 
-			s.logger.Error("can't close http server", err)
+			s.logger.Error("can't close http server", slog.Any("err", err))
 
 			return
 		}
@@ -90,7 +87,7 @@ func (s *Server) Run() {
 	<-ctx.Done()
 
 	if err := s.httpServer.Shutdown(context.Background()); err != nil {
-		s.logger.Error("can't shutdown gracefully", err)
+		s.logger.Error("can't shutdown gracefully", slog.Any("err", err))
 
 		return
 	}

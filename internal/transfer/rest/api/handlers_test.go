@@ -8,12 +8,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	mockredis "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/repository/mock"
-	mockrental "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/mock"
-	rentalmodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
-	mocktracker "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/mock"
-	trackermodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/model"
-	"github.com/go-playground/validator/v10"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
@@ -22,12 +16,17 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/golang/mock/gomock"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/require"
 
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/model"
+	mockrental "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/mock"
+	rentalmodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
+	mocktracker "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/mock"
+	trackermodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/model"
+	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/transfer/rest/model"
 )
 
 const (
@@ -348,7 +347,6 @@ func beforeTest(t *testing.T) (*Server, *mockrental.MockRentalService, *mocktrac
 	controller := gomock.NewController(t)
 	httpRouter := mux.NewRouter()
 
-	mockRedisService := mockredis.NewMockScooterRepository(controller)
 	mockRentalService := mockrental.NewMockRentalService(controller)
 	mockTrackerService := mocktracker.NewMockService(controller)
 
@@ -362,7 +360,6 @@ func beforeTest(t *testing.T) (*Server, *mockrental.MockRentalService, *mocktrac
 			Handler: httpRouter,
 		},
 		httpRouter,
-		mockRedisService,
 		mockRentalService,
 		mockTrackerService,
 		users,

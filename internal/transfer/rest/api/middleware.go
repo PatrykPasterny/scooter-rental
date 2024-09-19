@@ -9,7 +9,7 @@ func AuthenticateUser(h http.HandlerFunc, logger *slog.Logger, users map[string]
 	return func(writer http.ResponseWriter, request *http.Request) {
 		clientUUID, err := clientUUIDFromHeader(request)
 		if err != nil {
-			logger.Error("Failed to parse the clientID", err)
+			logger.Error("Failed to parse the clientID", slog.Any("err", err))
 
 			Error(writer, http.StatusForbidden, "Failed getting clientID from header.")
 
@@ -17,9 +17,9 @@ func AuthenticateUser(h http.HandlerFunc, logger *slog.Logger, users map[string]
 		}
 
 		if _, ok := users[clientUUID.String()]; !ok {
-			logger.Error("Failed to authenticate user", err)
+			logger.Error("Failed to authenticate user", slog.Any("err", err))
 
-			Error(writer, http.StatusForbidden, "Failed getting clientID from header.")
+			Error(writer, http.StatusForbidden, "Failed authenticating client.")
 
 			return
 		}

@@ -10,9 +10,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/schema"
 
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/model"
 	modelrental "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
 	trackermodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/model"
+	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/transfer/rest/model"
 )
 
 const (
@@ -35,24 +35,25 @@ var (
 //	@Summary	Gets scooters in the queried area of given city.
 //	@Tags		scooters
 //
-//	@Param		Client-Id	header		string	true	"ClientID"									minlength(36)	maxlength(36)	default(00000000-0000-0000-0000-000000000000)
-//	@Param		city		query		string	true	"City"										default(Ottawa)
-//	@Param		longitude	query		number	true	"Longitude of the center of the rectangle"	default(73.4)
-//	@Param		latitude	query		number	true	"Latitude of the center of the rectangle"	default(45.4)
-//	@Param		height		query		number	true	"Height of the rectangle in meters"			default(20000.0)
-//	@Param		width		query		number	true	"Width of the rectangle in meters"			default(25000.0)
+//	@Param		Client-Id		header		string	true	"ClientID"									minlength(36)	maxlength(36)	default(00000000-0000-0000-0000-000000000000)
+//	@Param		city			query		string	true	"City"										default(Ottawa)
+//	@Param		longitude		query		number	true	"Longitude of the center of the rectangle"	default(73.4)
+//	@Param		latitude		query		number	true	"Latitude of the center of the rectangle"	default(45.4)
+//	@Param		height			query		number	true	"Height of the rectangle in meters"			default(20000.0)
+//	@Param		width			query		number	true	"Width of the rectangle in meters"			default(25000.0)
+//	@Param		availability	query		bool	false	"Value of availability to filter by"
 //
-//	@Success	200			{object}	[]model.ScooterGet
-//	@Failure	400			{object}	model.ApiError
-//	@Failure	403			{object}	model.ApiError
-//	@Failure	500			{object}	model.ApiError
+//	@Success	200				{object}	[]model.ScooterGet
+//	@Failure	400				{object}	model.ApiError
+//	@Failure	403				{object}	model.ApiError
+//	@Failure	500				{object}	model.ApiError
 //	@Router		/scooters [get]
 func (s *Server) getScooters(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	clientUUID, err := clientUUIDFromHeader(r)
 	if err != nil {
-		s.logger.Error("failed to get clientID from header", err)
+		s.logger.Error("failed to get clientID from header", slog.Any("err", err))
 
 		Error(w, http.StatusBadRequest, "Failed getting clientUUID from header.")
 
@@ -68,7 +69,7 @@ func (s *Server) getScooters(w http.ResponseWriter, r *http.Request) {
 	decoder := schema.NewDecoder()
 
 	if err = decoder.Decode(&queryParams, r.URL.Query()); err != nil {
-		ctxLogger.Error("failed to decode query params", err)
+		ctxLogger.Error("failed to decode query params", slog.Any("err", err))
 
 		Error(w, http.StatusBadRequest, "Failed decoding query params.")
 
@@ -76,7 +77,7 @@ func (s *Server) getScooters(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = s.validator.Struct(queryParams); err != nil {
-		ctxLogger.Error("failed to validate query params", err)
+		ctxLogger.Error("failed to validate query params", slog.Any("err", err))
 
 		Error(w, http.StatusBadRequest, "Failed validating query params.")
 
@@ -103,7 +104,7 @@ func (s *Server) getScooters(w http.ResponseWriter, r *http.Request) {
 
 	rentalScooters, err := s.rentalService.GetScooters(ctx, geoRectangle)
 	if err != nil {
-		ctxLogger.Error("failed to get scooters from rental service", err)
+		ctxLogger.Error("failed to get scooters from rental service", slog.Any("err", err))
 
 		Error(w, http.StatusInternalServerError, "Failed getting scooters.")
 
@@ -115,7 +116,7 @@ func (s *Server) getScooters(w http.ResponseWriter, r *http.Request) {
 	for i := range rentalScooters {
 		scooterUUID, innerErr := uuid.Parse(rentalScooters[i].Name)
 		if innerErr != nil {
-			ctxLogger.Error("failed to get parse scooterID to ScooterUUID", err)
+			ctxLogger.Error("failed to get parse scooterID to ScooterUUID", slog.Any("err", err))
 
 			Error(w, http.StatusInternalServerError, "Failed parsing scooterID.")
 
@@ -128,6 +129,12 @@ func (s *Server) getScooters(w http.ResponseWriter, r *http.Request) {
 			Longitude:    rentalScooters[i].Longitude,
 			Availability: rentalScooters[i].Availability,
 		}
+	}
+
+	if queryParams.Availability != nil {
+		scooters = model.FilterScooters(scooters, func(s *model.ScooterGet) bool {
+			return s.Availability == *queryParams.Availability
+		})
 	}
 
 	ctxLogger.Info("successfully received scooters")
@@ -153,7 +160,7 @@ func (s *Server) rentScooter(w http.ResponseWriter, r *http.Request) {
 
 	clientUUID, err := clientUUIDFromHeader(r)
 	if err != nil {
-		s.logger.Error("failed to get clientID from header", err)
+		s.logger.Error("failed to get clientID from header", slog.Any("err", err))
 
 		Error(w, http.StatusBadRequest, "Failed getting clientUUID from header.")
 
@@ -167,7 +174,7 @@ func (s *Server) rentScooter(w http.ResponseWriter, r *http.Request) {
 	var rentPost model.RentPost
 
 	if err = json.NewDecoder(r.Body).Decode(&rentPost); err != nil {
-		ctxLogger.Error("failed to decode request body", err)
+		ctxLogger.Error("failed to decode request body", slog.Any("err", err))
 
 		Error(w, http.StatusBadRequest, "Failed to decode request body to rental information.")
 
@@ -175,7 +182,7 @@ func (s *Server) rentScooter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = s.validator.Struct(rentPost); err != nil {
-		ctxLogger.Error("failed to validate request body", err)
+		ctxLogger.Error("failed to validate request body", slog.Any("err", err))
 
 		Error(w, http.StatusBadRequest, "Failed validating request body.")
 
@@ -192,7 +199,7 @@ func (s *Server) rentScooter(w http.ResponseWriter, r *http.Request) {
 	ctxLogger.Info("Renting scooter.")
 
 	if err = s.rentalService.Rent(ctx, rentalScooter); err != nil {
-		ctxLogger.Error("failed to rent a scooter", err)
+		ctxLogger.Error("failed to rent a scooter", slog.Any("err", err))
 
 		Error(w, http.StatusInternalServerError, "Failed renting scooter.")
 
@@ -235,7 +242,7 @@ func (s *Server) freeScooter(w http.ResponseWriter, r *http.Request) {
 
 	clientUUID, err := clientUUIDFromHeader(r)
 	if err != nil {
-		s.logger.Error("failed to get clientID from header")
+		s.logger.Error("failed to get clientID from header", slog.Any("err", err))
 
 		Error(w, http.StatusBadRequest, "Failed getting clientUUID from header.")
 
@@ -249,7 +256,7 @@ func (s *Server) freeScooter(w http.ResponseWriter, r *http.Request) {
 	var freePost model.FreePost
 
 	if err = json.NewDecoder(r.Body).Decode(&freePost); err != nil {
-		ctxLogger.Error("failed to decode scooterID from request body", err)
+		ctxLogger.Error("failed to decode scooterID from request body", slog.Any("err", err))
 
 		Error(w, http.StatusBadRequest, "Failed decoding request body to scooterID.")
 
@@ -257,7 +264,7 @@ func (s *Server) freeScooter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = s.validator.Struct(freePost); err != nil {
-		ctxLogger.Error("failed to validate request body", err)
+		ctxLogger.Error("failed to validate request body", slog.Any("err", err))
 
 		Error(w, http.StatusBadRequest, "Failed validating request body.")
 
@@ -271,7 +278,7 @@ func (s *Server) freeScooter(w http.ResponseWriter, r *http.Request) {
 	ctxLogger.Info("Freeing the scooter.")
 
 	if err = s.rentalService.Free(ctx, freePost.ScooterUUID); err != nil {
-		ctxLogger.Error("failed to free the scooter", err)
+		ctxLogger.Error("failed to free the scooter", slog.Any("err", err))
 
 		Error(w, http.StatusInternalServerError, "Failed freeing scooter.")
 

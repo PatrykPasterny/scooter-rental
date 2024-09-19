@@ -3,9 +3,11 @@ package rental
 import (
 	"context"
 	"fmt"
-	redis "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/repository"
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
+
 	"github.com/google/uuid"
+
+	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service"
+	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
 )
 
 //go:generate mockgen -source=service.go -destination=mock/service_mock.go -package=mock
@@ -16,10 +18,10 @@ type RentalService interface {
 }
 
 type rentalService struct {
-	scooterRepository redis.ScooterRepository
+	scooterRepository service.ScooterRepository
 }
 
-func NewRentalService(repo redis.ScooterRepository) *rentalService {
+func NewRentalService(repo service.ScooterRepository) *rentalService {
 	return &rentalService{
 		scooterRepository: repo,
 	}

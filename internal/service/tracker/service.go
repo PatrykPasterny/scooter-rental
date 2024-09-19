@@ -3,13 +3,13 @@ package tracker
 import (
 	"context"
 	"fmt"
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/model"
 	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
 
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/repository"
+	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service"
+	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/model"
 )
 
 const (
@@ -31,12 +31,12 @@ type Service interface {
 
 type trackingService struct {
 	logger         *slog.Logger
-	service        repository.ScooterRepository
+	service        service.ScooterRepository
 	rentedScooters map[uuid.UUID]chan uuid.UUID
 	errorsChan     map[uuid.UUID]chan error
 }
 
-func NewTrackingService(logger *slog.Logger, service repository.ScooterRepository) *trackingService {
+func NewTrackingService(logger *slog.Logger, service service.ScooterRepository) *trackingService {
 	return &trackingService{
 		logger:         logger,
 		service:        service,

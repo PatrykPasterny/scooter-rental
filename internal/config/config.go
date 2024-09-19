@@ -13,6 +13,13 @@ type Config struct {
 	HTTP  int    `env:"HTTP,required"`
 	Name  string `env:"NAME,required"`
 	Users string `env:"USERS,required"`
+	Redis Redis  `env:",prefix=REDIS_"`
+}
+
+type Redis struct {
+	Host     string `env:"HOST,required"`
+	Password string `env:"PASSWORD"`
+	Database int    `env:"DATABASE"`
 }
 
 func NewConfig(ctx context.Context, configPath string) (*Config, error) {

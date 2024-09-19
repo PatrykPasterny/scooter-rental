@@ -25,3 +25,15 @@ type FreePost struct {
 type ApiError struct {
 	Message string `json:"Message"`
 }
+
+func FilterScooters(scooters []ScooterGet, f func(s *ScooterGet) bool) []ScooterGet {
+	var filtered []ScooterGet
+
+	for i := range scooters {
+		if f(&scooters[i]) {
+			filtered = append(filtered, scooters[i])
+		}
+	}
+
+	return filtered
+}

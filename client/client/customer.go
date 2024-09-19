@@ -13,8 +13,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/client/model"
 	"github.com/google/uuid"
+
+	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/client/model"
 )
 
 const (
@@ -27,6 +28,7 @@ const (
 
 	numberOfScooterRentals = 5
 	timeOfScooterRentals   = 10
+	timeBeforeNextRental   = 2
 )
 
 var errUnexpectedResponseStatus = errors.New("received unexpected response status")
@@ -60,7 +62,7 @@ func (c *customerClient) SimulateUser(customer *Customer) {
 	for i := 1; i <= numberOfScooterRentals; i++ {
 		scooters, err := c.getScooters(customer)
 		if err != nil {
-			c.logger.Error("failed getting scooters information", err)
+			c.logger.Error("failed getting scooters information", slog.Any("err", err))
 
 			return
 		}
@@ -77,7 +79,7 @@ func (c *customerClient) SimulateUser(customer *Customer) {
 
 		err = c.rentScooter(customer, &availableScooters[j], customer.City)
 		if err != nil {
-			c.logger.Error("failed renting scooter", err)
+			c.logger.Error("failed renting scooter", slog.Any("err", err))
 			i--
 
 			time.Sleep(time.Second)
@@ -89,10 +91,12 @@ func (c *customerClient) SimulateUser(customer *Customer) {
 
 		err = c.freeScooter(customer, availableScooters[j].UUID)
 		if err != nil {
-			c.logger.Error("failed freeing scooter", err)
+			c.logger.Error("failed freeing scooter", slog.Any("err", err))
 
 			return
 		}
+
+		time.Sleep(timeBeforeNextRental * time.Second)
 	}
 }
 
@@ -118,7 +122,7 @@ func (c *customerClient) getScooters(client *Customer) ([]model.ScooterGet, erro
 
 	defer func() {
 		if err = response.Body.Close(); err != nil {
-			c.logger.Error("failed closing body", err)
+			c.logger.Error("failed closing body", slog.Any("err", err))
 
 			return
 		}
@@ -142,12 +146,11 @@ func (c *customerClient) getScooters(client *Customer) ([]model.ScooterGet, erro
 }
 
 func (c *customerClient) rentScooter(client *Customer, scooter *model.ScooterGet, city string) error {
-	scooterPost := model.ScooterPost{
-		ScooterUUID:  scooter.UUID,
-		Longitude:    scooter.Longitude,
-		Latitude:     scooter.Latitude,
-		Availability: scooter.Availability,
-		City:         city,
+	scooterPost := model.RentPost{
+		ScooterUUID: scooter.UUID,
+		Longitude:   scooter.Longitude,
+		Latitude:    scooter.Latitude,
+		City:        city,
 	}
 
 	scooterJSON, err := json.Marshal(scooterPost)
@@ -167,7 +170,7 @@ func (c *customerClient) rentScooter(client *Customer, scooter *model.ScooterGet
 
 	defer func() {
 		if err = response.Body.Close(); err != nil {
-			c.logger.Error("failed closing body", err)
+			c.logger.Error("failed closing body", slog.Any("err", err))
 
 			return
 		}
@@ -209,7 +212,7 @@ func (c *customerClient) freeScooter(client *Customer, scooterUUID uuid.UUID) er
 
 	defer func() {
 		if err = response.Body.Close(); err != nil {
-			c.logger.Error("failed closing body", err)
+			c.logger.Error("failed closing body", slog.Any("err", err))
 
 			return
 		}

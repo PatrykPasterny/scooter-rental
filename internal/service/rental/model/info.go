@@ -1,10 +1,5 @@
 package model
 
-const (
-	Rent = iota
-	Free
-)
-
 type RentInfo struct {
 	ScooterUUID string
 	City        string

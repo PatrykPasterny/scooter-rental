@@ -20,6 +20,9 @@ func TestNewConfig(t *testing.T) {
 				HTTP:  8081,
 				Name:  "scootin_aboot",
 				Users: "8212d8ba-74d1-49af-8a84-6d6c392ec71c,897737a8-77f1-4f53-8a51-6f9edaee6ed9",
+				Redis: Redis{
+					Host: "redis:6379",
+				},
 			},
 			wantErr: false,
 		},
