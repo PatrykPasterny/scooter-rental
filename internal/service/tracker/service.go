@@ -8,8 +8,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service"
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/model"
+	"github.com/PatrykPasterny/scooter-rental/internal/service"
+	"github.com/PatrykPasterny/scooter-rental/internal/service/tracker/model"
 )
 
 const (

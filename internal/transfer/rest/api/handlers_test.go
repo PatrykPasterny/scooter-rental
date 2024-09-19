@@ -22,11 +22,11 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/require"
 
-	mockrental "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/mock"
-	rentalmodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
-	mocktracker "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/mock"
-	trackermodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/model"
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/transfer/rest/model"
+	mockrental "github.com/PatrykPasterny/scooter-rental/internal/service/rental/mock"
+	rentalmodel "github.com/PatrykPasterny/scooter-rental/internal/service/rental/model"
+	mocktracker "github.com/PatrykPasterny/scooter-rental/internal/service/tracker/mock"
+	trackermodel "github.com/PatrykPasterny/scooter-rental/internal/service/tracker/model"
+	"github.com/PatrykPasterny/scooter-rental/internal/transfer/rest/model"
 )
 
 const (

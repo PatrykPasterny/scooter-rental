@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 
-	rentalmodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
+	rentalmodel "github.com/PatrykPasterny/scooter-rental/internal/service/rental/model"
 )
 
 const unitOfLength = "m" // in meters

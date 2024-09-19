@@ -5,8 +5,8 @@ import (
 
 	"github.com/google/uuid"
 
-	rentalmodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
-	trackermodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/model"
+	rentalmodel "github.com/PatrykPasterny/scooter-rental/internal/service/rental/model"
+	trackermodel "github.com/PatrykPasterny/scooter-rental/internal/service/tracker/model"
 )
 
 //go:generate mockgen -source=scooter_repository.go -destination=mock/scooter_repository_mock.go -package=mock

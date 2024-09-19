@@ -15,7 +15,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/client/model"
+	"github.com/PatrykPasterny/scooter-rental/client/model"
 )
 
 const (

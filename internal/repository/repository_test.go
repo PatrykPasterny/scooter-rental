@@ -13,8 +13,8 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/require"
 
-	rentalmodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
-	trackermodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/model"
+	rentalmodel "github.com/PatrykPasterny/scooter-rental/internal/service/rental/model"
+	trackermodel "github.com/PatrykPasterny/scooter-rental/internal/service/tracker/model"
 )
 
 const (

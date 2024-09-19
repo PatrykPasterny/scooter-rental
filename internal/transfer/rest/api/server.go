@@ -13,8 +13,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental"
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker"
+	"github.com/PatrykPasterny/scooter-rental/internal/service/rental"
+	"github.com/PatrykPasterny/scooter-rental/internal/service/tracker"
 )
 
 type Server struct {

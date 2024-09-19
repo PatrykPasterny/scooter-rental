@@ -12,11 +12,11 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/redis/go-redis/v9"
 
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/config"
-	redisservice "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/repository"
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental"
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker"
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/transfer/rest/api"
+	"github.com/PatrykPasterny/scooter-rental/internal/config"
+	redisservice "github.com/PatrykPasterny/scooter-rental/internal/repository"
+	"github.com/PatrykPasterny/scooter-rental/internal/service/rental"
+	"github.com/PatrykPasterny/scooter-rental/internal/service/tracker"
+	"github.com/PatrykPasterny/scooter-rental/internal/transfer/rest/api"
 )
 
 const configPath = "internal/config/default.env"

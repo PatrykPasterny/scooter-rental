@@ -1,4 +1,4 @@
-module github.com/NordSecurity-Interviews/BE-PatrykPasterny
+module github.com/PatrykPasterny/scooter-rental
 
 go 1.22.5
 

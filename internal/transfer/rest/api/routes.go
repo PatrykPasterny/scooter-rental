@@ -5,7 +5,7 @@ import (
 
 	swagger "github.com/swaggo/http-swagger/v2"
 
-	_ "github.com/NordSecurity-Interviews/BE-PatrykPasterny/docs"
+	_ "github.com/PatrykPasterny/scooter-rental/docs"
 )
 
 const (

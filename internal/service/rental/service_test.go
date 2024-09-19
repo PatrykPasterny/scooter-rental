@@ -13,8 +13,8 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/require"
 
-	repositorymock "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/mock"
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
+	repositorymock "github.com/PatrykPasterny/scooter-rental/internal/service/mock"
+	"github.com/PatrykPasterny/scooter-rental/internal/service/rental/model"
 )
 
 const (

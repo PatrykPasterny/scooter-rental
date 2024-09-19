@@ -10,9 +10,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/schema"
 
-	modelrental "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
-	trackermodel "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/model"
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/transfer/rest/model"
+	modelrental "github.com/PatrykPasterny/scooter-rental/internal/service/rental/model"
+	trackermodel "github.com/PatrykPasterny/scooter-rental/internal/service/tracker/model"
+	"github.com/PatrykPasterny/scooter-rental/internal/transfer/rest/model"
 )
 
 const (

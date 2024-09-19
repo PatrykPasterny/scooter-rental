@@ -8,8 +8,8 @@ import (
 	context "context"
 	reflect "reflect"
 
-	model "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
-	model0 "github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/tracker/model"
+	model "github.com/PatrykPasterny/scooter-rental/internal/service/rental/model"
+	model0 "github.com/PatrykPasterny/scooter-rental/internal/service/tracker/model"
 	gomock "github.com/golang/mock/gomock"
 	uuid "github.com/google/uuid"
 )

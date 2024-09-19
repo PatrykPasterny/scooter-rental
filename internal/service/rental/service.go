@@ -6,8 +6,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service"
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/internal/service/rental/model"
+	"github.com/PatrykPasterny/scooter-rental/internal/service"
+	"github.com/PatrykPasterny/scooter-rental/internal/service/rental/model"
 )
 
 //go:generate mockgen -source=service.go -destination=mock/service_mock.go -package=mock

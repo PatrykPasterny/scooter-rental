@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/NordSecurity-Interviews/BE-PatrykPasterny/client/client"
+	"github.com/PatrykPasterny/scooter-rental/client/client"
 )
 
 var clientsToSetup = []client.Customer{

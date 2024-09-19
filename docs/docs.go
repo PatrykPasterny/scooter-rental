@@ -38,7 +38,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_transfer_rest_model.FreePost"
+                            "$ref": "#/definitions/github_com_PatrykPasterny_scooter-rental_internal_transfer_rest_model.FreePost"
                         }
                     }
                 ],
@@ -90,7 +90,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_transfer_rest_model.RentPost"
+                            "$ref": "#/definitions/github_com_PatrykPasterny_scooter-rental_internal_transfer_rest_model.RentPost"
                         }
                     }
                 ],
@@ -189,7 +189,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_transfer_rest_model.ScooterGet"
+                                "$ref": "#/definitions/github_com_PatrykPasterny_scooter-rental_internal_transfer_rest_model.ScooterGet"
                             }
                         }
                     },
@@ -216,7 +216,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_transfer_rest_model.FreePost": {
+        "github_com_PatrykPasterny_scooter-rental_internal_transfer_rest_model.FreePost": {
             "type": "object",
             "required": [
                 "UUID"
@@ -227,7 +227,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_transfer_rest_model.RentPost": {
+        "github_com_PatrykPasterny_scooter-rental_internal_transfer_rest_model.RentPost": {
             "type": "object",
             "required": [
                 "UUID",
@@ -250,7 +250,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_NordSecurity-Interviews_BE-PatrykPasterny_internal_transfer_rest_model.ScooterGet": {
+        "github_com_PatrykPasterny_scooter-rental_internal_transfer_rest_model.ScooterGet": {
             "type": "object",
             "properties": {
                 "UUID": {
