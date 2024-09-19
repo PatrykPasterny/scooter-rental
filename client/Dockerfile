@@ -14,6 +14,7 @@ RUN go mod download
 COPY . .
 
 # Build the Go binary
+RUN go mod tidy
 RUN go build -o myapp
 
 # Specify the command to run your app when the container starts
